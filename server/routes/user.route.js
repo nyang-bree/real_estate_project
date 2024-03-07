@@ -7,6 +7,7 @@ module.exports = (app) => {
     app.get('/api/user', authenticate, UserController.getAllUser)
     app.get('/api/user/:id', authenticate, UserController.getOneUser)
     app.patch('/api/user/edit/:id', authenticate, UserController.updateUser)
+    app.delete('/api/user/delete/:id', authenticate, UserController.deleteUser)
     app.get('/api/user', UserController.index)
     
 }

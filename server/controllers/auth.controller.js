@@ -53,6 +53,7 @@ module.exports.signin = async (req, res) => {
 }
 
 module.exports.getAllAuth = (req, res) =>{
+    console.log('role from authenticate', req.role);
     User.find({})
     .then((auth) => {
         res.json({
@@ -64,3 +65,37 @@ module.exports.getAllAuth = (req, res) =>{
     });
 }
 
+module.exports.getOneAuth = (req, res) =>{
+    Auth.findOne({id: req.params.id})
+    .then((auth) => {
+        res.json({
+            auth
+        })
+    })
+    .catch((err) =>{
+        res.json(err)
+    })
+}
+
+module.exports.updateAuth = (req,res) => {
+    Auth.findOneAndUpdate({_id: req.params.id}, req.body,{new: true})
+    .then((updatedUser) => {
+        res.json(updatedAuth)
+    })
+    .catch((err) => {
+        res.json(err)
+    })
+}
+
+module.exports.deleteAuth = (req, res) => {
+    Auth.deleteOne({_id: req.params.id})
+    .then((results) => {
+        res.json({
+            results
+        })
+    })
+    .catch((err) => {
+        res.json(err)
+    });
+   
+}

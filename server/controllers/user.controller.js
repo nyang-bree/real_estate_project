@@ -39,4 +39,17 @@ module.exports.updateUser = (req,res) => {
         res.json(err)
     })
 }
+
+module.exports.deleteUser = (req, res) => {
+    User.deleteOne({_id: req.params.id})
+    .then((results) => {
+        res.json({
+            results
+        })
+    })
+    .catch((err) => {
+        res.json(err)
+    });
+   
+}
  
