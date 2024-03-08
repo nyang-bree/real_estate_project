@@ -27,30 +27,46 @@ module.exports.signout = (req, res) => {
     res.status(204).json({msg:'You have been locked out'});
 }
 
-module.exports.signin = async (req, res) => {
-    const auth = await Auth.findOne({email: req.body.email});
+// module.exports.signin = async (req, res) => {
+//     const auth = await Auth.findOne({email: req.body.email});
 
-    if(auth === null) {
-        //email not found in users collection
-        return res.sendStatus(400).json('invalid credentials');
+//     if(auth === null) {
+//         //email not found in users collection
+//         return res.sendStatus(400).json('invalid credentials');
+//     }
+
+//     const correctPassword = await bcrypt.compare(req.body.password.auth.password);
+//     if(!correctPassword) {
+//         return res.sendStatus(400);
+//     }
+
+//     // //if we made it this far the password was correct
+//     const authToken = jwt.sign({
+//         id:user._id
+//     }, process.env.SECRET_KEY);
+//     // const authToken = createjwtToken(auth._id)
+
+//     res.cookie("authtoken", authToken, {
+//             httpOnly: true
+//         })
+//         .json({msg: "Signin successful!"});
+
+// }
+
+module.exports.signin = async(req,res,next) => {
+    const{email,password} = req.body;
+    try{
+        const validAuth = await Auth.findOne({email});
+        if (!validAuth) return next(errorHandler(404,'User not found'));
+        const validPassword = bcrypt.compareSync(password,validAuth.password);
+        if (!validPassword) return next(errorHandler(401,'wrong credential'));
+        const token = jwt.sign({id: validAuth._id}, "secret")
+        const { password: pass, ...rest} = validAuth._doc
+        res.cookie('access_token, token',token, {httpOnly: true}).status(200).json(rest);
+    }catch (err){
+        next(err);
+
     }
-
-    const correctPassword = await bcrypt.compare(req.body.password.auth.password);
-    if(!correctPassword) {
-        return res.sendStatus(400);
-    }
-
-    // //if we made it this far the password was correct
-    const authToken = jwt.sign({
-        id:user._id
-    }, process.env.SECRET_KEY);
-    // const authToken = createjwtToken(auth._id)
-
-    res.cookie("authtoken", authToken, {
-            httpOnly: true
-        })
-        .json({msg: "Signin successful!"});
-
 }
 
 module.exports.getAllAuth = (req, res) =>{
