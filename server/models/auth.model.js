@@ -32,16 +32,16 @@ AuthSchema.pre('save', function(next){
     });
 });
 
-AuthSchema.virtual('confirmPassword')
-.get( () => this.confirmPassword)
-.set( value => this._confirmPassword = value);
+// AuthSchema.virtual('confirmPassword')
+// .get( () => this.confirmPassword)
+// .set( value => this._confirmPassword = value);
 
-AuthSchema.pre('validate', function(next) {
-    if(this.password !== this.confirmPassword) {
-        this.invalidate('confirmPassword', 'Password must match confirm password');
-    }
-    next();
-});
+// AuthSchema.pre('validate', function(next) {
+//     if(this.password !== this.confirmPassword) {
+//         this.invalidate('confirmPassword', 'Password must match confirm password');
+//     }
+//     next();
+// });
 
 const Auth = mongoose.model('Auth', AuthSchema);
 module.exports = Auth;

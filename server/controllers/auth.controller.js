@@ -2,6 +2,7 @@ const Auth = require("../models/auth.model");
 const bcrypt = require('bcrypt');
 const { createjwtToken } = require("../utils/generate-jwt-token");
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 
 
@@ -10,7 +11,7 @@ module.exports.signup = (req, res) => {
     .then((auth) => {
         const authToken = jwt.sign({
             id: auth._id
-        },process.env.JWT_SECRET);
+        },"secret");
         console.log(authToken);
         res.cookie("authtoken", authToken,{
             httpOnly: true
